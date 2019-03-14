@@ -1,5 +1,7 @@
 package dev.mko.kotlinsugar
 
+import kotlin.reflect.KClass
+
 /**
  * Wraps the [kotlin.checkNotNull] to avoid IllegalStateExceptions. Just returns false instead of
  * the Exception like it is implemented in the native kotlin implementation.
@@ -33,4 +35,20 @@ inline fun <T1, T2, T3, R> multiLet(value1: T1?, value2: T2?, value3: T3?, block
     }
 
     return null
+}
+
+/**
+ * Take multiple Exceptions to catch and call the [catchBlock] if it gets thrown. If the thrown Exception is not in the list
+ * it will be just forwarded.
+ */
+inline fun multiCatch(runThis: () -> Unit, catchBlock: (Throwable) -> Unit, vararg exceptions: KClass<out Throwable>) {
+    try {
+        runThis()
+    } catch (exception: Exception) {
+        val contains = exceptions.find {
+            it.isInstance(exception)
+        }
+        if (contains != null) catchBlock(exception)
+        else throw exception
+    }
 }

@@ -1,1 +1,1 @@
-include ':kotlinsugar'
+include ':kotlinsugar', ':kotlinsugardemo'
