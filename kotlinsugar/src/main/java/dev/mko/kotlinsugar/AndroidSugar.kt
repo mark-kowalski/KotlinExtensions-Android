@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import dev.mko.kotlinsugar.model.AlertDialogViewModel
 
 /**
  * Starts an activity from the given class, which must extend [Activity].
@@ -40,4 +41,29 @@ fun AppCompatActivity.popWholeBackStack() {
     for (i in 0 until fragmentManager.fragments.size) {
         fragmentManager.popBackStack()
     }
+}
+
+/**
+ * Generates an android AlertDialog from the given ViewModel.
+ * onPositiveButtonClick will execute the callback passed with the ViewModel.
+ * onNegativeButtonClick simply will dismiss the dialog.
+ *
+ * If [AlertDialogViewModel.negativeButtonText] is null the dialog will be
+ * created with just the positive button.
+ */
+fun Activity.showAlertDialogFromViewModel(viewModel: AlertDialogViewModel) {
+    val alertDialogBuilder = androidx.appcompat.app.AlertDialog.Builder(this)
+        .setTitle(viewModel.header)
+        .setMessage(viewModel.message)
+        .setPositiveButton(viewModel.positiveButtonText) { dialog, _ ->
+            viewModel.onPositiveButtonClick; dialog.dismiss()
+        }
+
+    viewModel.negativeButtonText?.let {
+        alertDialogBuilder.setNegativeButton(it) { dialog, _ ->
+            dialog.dismiss()
+        }
+    }
+
+    alertDialogBuilder.create().show()
 }
