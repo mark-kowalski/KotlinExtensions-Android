@@ -1,5 +1,6 @@
 package dev.mko.kotlinsugardemo
 
+import dev.mko.kotlinsugar.model.AssociatedEnum
 import dev.mko.kotlinsugar.multiCatch
 import dev.mko.kotlinsugar.multiLet
 import org.junit.Test
@@ -53,6 +54,16 @@ class KotlinSugarDemoTest {
         multiLet("", 1) { anyString, anyInt ->
             assert(true)
         }
+    }
+
+    @Test
+    fun associatedEnum_test() {
+        var associatedEnum: AssociatedEnum = AssociatedEnum.Unknown
+
+        assert(!associatedEnum.value5)
+
+        associatedEnum = AssociatedEnum.Valid("", 3, 1)
+        assert(associatedEnum.value5)
     }
 
 }
